@@ -102,15 +102,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onSuccess(List<Model> models) {
                 mProgressBar.setVisibility(View.GONE);
-                Log.e(TAG,"onSuccess - findAll");
+                Log.e(TAG,"onSuccess - findAll. List size: " + models.size());
 
                 for(Model m: models){
-
-
-                    if((m.get("name").toString().equals(name))  && (m.get("password").toString().equals(password))    ){
+                    if((m.get("name").toString().equals(name))  && (m.get("password").toString().equals(password))){
                         Log.e(TAG,"USER EXISTS!");
                         startActivity(new Intent(LoginActivity.this,MainActivity.class));
-                        Toast.makeText(LoginActivity.this,"Loged in as " + name , Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this,"Logged in as " + name , Toast.LENGTH_SHORT).show();
                     }else{
                         Toast.makeText(LoginActivity.this,"Wrong user credentials!", Toast.LENGTH_SHORT).show();
                     }

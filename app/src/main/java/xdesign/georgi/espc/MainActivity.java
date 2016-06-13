@@ -1,11 +1,15 @@
 package xdesign.georgi.espc;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableMap;
@@ -21,9 +25,9 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements VoidCallback {
 
     private static final String TAG = MainActivity.class.getSimpleName();
-
-
-
+    private ModelRepository featuresRepository;
+    private RestAdapter adapter;
+    private TextView mOutputTextView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,31 +35,31 @@ public class MainActivity extends AppCompatActivity implements VoidCallback {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // Set up Loopback's adapter and tell it how to connect to the backend api
+        adapter = new RestAdapter(getApplicationContext(), "http://10.0.2.2:3000/api");
+        // Create and initialize the Feature model
+        featuresRepository = adapter.createRepository("Feature");
+
+        mOutputTextView = (TextView)findViewById(R.id.output);
 
 
+        featuresRepository.findAll(new ListCallback<Model>() {
+            @Override
+            public void onSuccess(List<Model> models) {
 
+                Log.e(TAG,"onSuccess - findAll. List size: " + models.size());
 
+                for(Model m: models){
+                    Log.e(TAG,"Feature name:" + m.get("name").toString() + " ID:"+m.get("id").toString() + " roomID: " + m.get("roomID").toString() + "\n");
+                    mOutputTextView.append("Feature name:" + m.get("name").toString() + " ID:"+m.get("id").toString() + " roomID: " + m.get("roomID").toString() + "\n");
+                }
+            }
 
-//        usersRepository.findAll(new ListCallback<Model>() {
-//            @Override
-//            public void onSuccess(List<Model> models) {
-//                Log.e(TAG,"onSuccess - findAll");
-//
-//                for(Model m: models){
-//                    Log.e(TAG,(((User_ESPC)m).getName()));
-//                    Log.e(TAG,m.get("name") + "");
-//                    Log.e(TAG,m.get("id") + "");
-//                }
-//            }
-//
-//            @Override
-//            public void onError(Throwable t) {
-//                Log.e(TAG,"onError - findAll");
-//            }
-//        });
-
-
-
+            @Override
+            public void onError(Throwable t) {
+                Log.e(TAG,"onError - findAll" + t.toString());
+            }
+        });
 
 
 
